@@ -1,4 +1,5 @@
 import ticketListReducer from './../../src/reducers/ticket-list-reducer';
+import Moment from 'moment';
 
 describe('ticketListReducer', () => {
 
@@ -9,7 +10,7 @@ describe('ticketListReducer', () => {
     issue : 'Jest is being diva and will not work with Webpack',
     timeOpen : 1500000000000,
     id: 0
-  }
+  };
 
   test('Should return default state if no action type is recognized', () => {
     expect(ticketListReducer({}, {type: null})).toEqual({});
@@ -36,4 +37,26 @@ describe('ticketListReducer', () => {
     });
   });
 
+  test('New ticket should include Moment-formatted wait times', () => {
+  const { names, location, issue, timeOpen, id } = sampleTicketData;
+  action = {
+    type: 'ADD_TICKET',
+    names: names,
+    location: location,
+    issue: issue,
+    timeOpen: timeOpen,
+    id: id,
+    formattedWaitTime: new Moment().fromNow(true)
+    };
+    expect(ticketListReducer({}, action)).toEqual({
+      [id] : {
+        names: names,
+        location: location,
+        issue: issue,
+        timeOpen: timeOpen,
+        id: id,
+        formattedWaitTime: 'a few seconds'
+      }
+    });
+  });
 });
